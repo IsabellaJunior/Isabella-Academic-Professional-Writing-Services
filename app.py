@@ -59,8 +59,8 @@ def save_message(name, email, message):
         df = pd.DataFrame([new_row])
     df.to_csv(file_path, index=False)
 
-# ---------- LOGO (root folder) ----------
-logo_path = "logo.png"
+# ---------- LOGO (using your exact filename) ----------
+logo_path = "logo.png.png"   # <-- Updated to match your uploaded file
 
 def get_image_base64(path):
     with open(path, "rb") as f:
@@ -71,7 +71,7 @@ if os.path.exists(logo_path):
     b64 = get_image_base64(logo_path)
     logo_img_html = f'<img src="data:image/png;base64,{b64}" class="header-logo-img" />'
 else:
-    # No fallback image – show nothing (or a simple text icon)
+    # If not found, show nothing
     logo_img_html = ""
 
 header_html = f"""
@@ -94,7 +94,7 @@ st.markdown("<div style='height: 70px;'></div>", unsafe_allow_html=True)
 tabs = st.tabs(["🏠 Home", "📖 Services", "⚙️ How It Works", "💰 Pricing", "⭐ Testimonials", "👤 About", "❓ FAQ", "📞 Contact", "📝 Order Now"])
 home_tab, services_tab, how_tab, pricing_tab, testimonials_tab, about_tab, faq_tab, contact_tab, order_tab = tabs
 
-# ---------- HOME ----------
+# ---------- HOME (unchanged) ----------
 with home_tab:
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -130,7 +130,7 @@ with home_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I used Isabella\'s resume writing service and landed an interview within a week. Highly recommend!"</p><p class="author">— Michael R., Marketing Executive</p></div>', unsafe_allow_html=True)
 
-# ---------- SERVICES ----------
+# ---------- SERVICES (unchanged) ----------
 with services_tab:
     st.markdown("## Our Premium Services")
     st.image("https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800", caption="Excellence in every word", use_container_width=True)
@@ -142,7 +142,7 @@ with services_tab:
         st.write("- **Custom Websites**: Built with Streamlit, HTML, CSS, or WordPress.\n- **Portfolio Sites**: Showcase your work.\n- **Landing Pages**: Convert visitors to clients.\n- **Maintenance & Support**: Ongoing updates and hosting.")
     st.info("All services are tailored to your needs. Contact us for a free quote!")
 
-# ---------- HOW IT WORKS ----------
+# ---------- HOW IT WORKS (unchanged) ----------
 with how_tab:
     st.markdown("## How It Works")
     st.markdown("Our process is simple and transparent.")
@@ -162,7 +162,7 @@ with how_tab:
         st.markdown("**4. Get your final document** – ready for submission.")
     st.success("We guarantee 100% original, plagiarism‑free content.")
 
-# ---------- PRICING ----------
+# ---------- PRICING (unchanged) ----------
 with pricing_tab:
     st.markdown("## Our Pricing")
     st.markdown("Transparent, per‑page rates for all your writing needs.")
@@ -242,7 +242,7 @@ with pricing_tab:
     
     st.caption("Prices are per page (approx. 300 words). Custom projects may vary. Contact us for a bespoke quote.")
 
-# ---------- TESTIMONIALS ----------
+# ---------- TESTIMONIALS (unchanged) ----------
 with testimonials_tab:
     st.markdown("## Client Testimonials")
     st.markdown("Real stories from real clients.")
@@ -252,13 +252,13 @@ with testimonials_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"The website they built for my business is gorgeous and converts well."</p><p class="author">— Amanda T., Small Business Owner</p></div><br><div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I needed a last‑minute research paper and they saved me. The paper got an A."</p><p class="author">— David K., Undergraduate Student</p></div>', unsafe_allow_html=True)
 
-# ---------- ABOUT (WITH YOUR REAL ISABELLA PHOTO) ----------
+# ---------- ABOUT (with your Isabella photo) ----------
 with about_tab:
     st.markdown("## About Isabella")
     st.markdown("Your trusted partner in academic and professional success.")
     
-    # ---- Your Isabella photo (root folder) ----
-    isabella_image_path = "isabella.png"   # <-- change if your filename is different
+    # ---- Your Isabella photo (using exact filename) ----
+    isabella_image_path = "isabella.png.PNG"   # <-- Updated to match your uploaded file
     
     col1, col2 = st.columns([1, 2])
     with col1:
@@ -318,7 +318,7 @@ with about_tab:
         </div>
         """, unsafe_allow_html=True)
 
-# ---------- FAQ ----------
+# ---------- FAQ (unchanged) ----------
 with faq_tab:
     st.markdown("## Frequently Asked Questions")
     with st.expander("What services do you offer?"):
@@ -334,7 +334,7 @@ with faq_tab:
     with st.expander("What payment methods do you accept?"):
         st.write("We accept PayPal. See the Payment section in the Order Now tab.")
 
-# ---------- CONTACT ----------
+# ---------- CONTACT (unchanged) ----------
 with contact_tab:
     st.title("📞 Contact Us")
     st.subheader("We're here to help")
@@ -355,7 +355,7 @@ with contact_tab:
             elif q_submit:
                 st.error("Please fill in all fields.")
 
-# ---------- ORDER NOW ----------
+# ---------- ORDER NOW (unchanged) ----------
 with order_tab:
     st.title("📝 Place Your Order")
     st.subheader("Fill in the details below")
