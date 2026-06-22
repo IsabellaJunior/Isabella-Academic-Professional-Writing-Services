@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
+import base64
 
 st.set_page_config(page_title="Isabella - Premium Writing Services", layout="wide")
 
@@ -37,7 +38,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Helper functions
+# ---------- HELPER FUNCTIONS ----------
 def save_order(name, email, phone, service, urgency, budget, description):
     file_path = "orders.csv"
     new_row = {"Date": datetime.now().strftime("%Y-%m-%d %H:%M"), "Name": name, "Email": email, "Phone": phone, "Service": service, "Urgency": urgency, "Budget": budget, "Description": description}
@@ -58,11 +59,9 @@ def save_message(name, email, message):
         df = pd.DataFrame([new_row])
     df.to_csv(file_path, index=False)
 
-# ---- Logo path ----
-logo_path = "Isabella_Website/logo.png/logo.png.png"
+# ---------- LOGO (root folder) ----------
+logo_path = "logo.png"
 
-# ---- Generate header with properly sized logo ----
-import base64
 def get_image_base64(path):
     with open(path, "rb") as f:
         data = f.read()
@@ -72,7 +71,8 @@ if os.path.exists(logo_path):
     b64 = get_image_base64(logo_path)
     logo_img_html = f'<img src="data:image/png;base64,{b64}" class="header-logo-img" />'
 else:
-    logo_img_html = '<div style="font-size: 1.8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">✍️</div>'
+    # No fallback image – show nothing (or a simple text icon)
+    logo_img_html = ""
 
 header_html = f"""
 <div style="position: sticky; top: 0; z-index: 999; background: white; padding: 8px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
@@ -90,7 +90,7 @@ st.markdown(header_html, unsafe_allow_html=True)
 
 st.markdown("<div style='height: 70px;'></div>", unsafe_allow_html=True)
 
-# Tabs
+# ---------- TABS ----------
 tabs = st.tabs(["🏠 Home", "📖 Services", "⚙️ How It Works", "💰 Pricing", "⭐ Testimonials", "👤 About", "❓ FAQ", "📞 Contact", "📝 Order Now"])
 home_tab, services_tab, how_tab, pricing_tab, testimonials_tab, about_tab, faq_tab, contact_tab, order_tab = tabs
 
@@ -252,19 +252,21 @@ with testimonials_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"The website they built for my business is gorgeous and converts well."</p><p class="author">— Amanda T., Small Business Owner</p></div><br><div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I needed a last‑minute research paper and they saved me. The paper got an A."</p><p class="author">— David K., Undergraduate Student</p></div>', unsafe_allow_html=True)
 
-# ---------- ABOUT ----------
+# ---------- ABOUT (WITH YOUR REAL ISABELLA PHOTO) ----------
 with about_tab:
     st.markdown("## About Isabella")
     st.markdown("Your trusted partner in academic and professional success.")
     
-    isabella_image_path = "Isabella_Website/logo.jsn/isabella photo.PNG"
+    # ---- Your Isabella photo (root folder) ----
+    isabella_image_path = "isabella.png"   # <-- change if your filename is different
     
     col1, col2 = st.columns([1, 2])
     with col1:
         if os.path.exists(isabella_image_path):
             st.image(isabella_image_path, caption="Our Founder, Isabella", use_container_width=True)
         else:
-            st.image("https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400", caption="Our Founder, Isabella", use_container_width=True)
+            # If image is missing, show nothing – no generic person
+            st.markdown("*(Isabella's photo will appear here)*")
     with col2:
         st.markdown("""
         **Our Mission** – To empower students, professionals, and businesses with exceptional writing services that drive success.
@@ -289,9 +291,9 @@ with about_tab:
                 <p style="font-size:0.8rem; color:#94a3b8; text-align:center;">PhD in English Literature</p>
                 """, unsafe_allow_html=True)
         else:
+            # No image – text only
             st.markdown("""
             <div class="team-card">
-                <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150">
                 <h4>Isabella</h4>
                 <p>Founder & Lead Writer</p>
                 <p style="font-size:0.8rem;color:#94a3b8;">PhD in English Literature</p>
