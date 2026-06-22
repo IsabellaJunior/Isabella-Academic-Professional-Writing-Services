@@ -1,4 +1,3 @@
-%%writefile app.py
 import streamlit as st
 import pandas as pd
 import os
@@ -33,19 +32,8 @@ st.markdown("""
     .team-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 0.5rem; border: 3px solid #e2e8f0; }
     .process-step { text-align: center; padding: 1rem; }
     .process-step .step-number { background-color: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
-    /* Header logo style - FIXED */
-    .header-logo-img {
-        height: 40px;
-        width: auto;
-        border-radius: 6px;
-        max-height: 40px;
-        object-fit: contain;
-    }
-    .header-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+    .header-logo-img { height: 40px; width: auto; border-radius: 6px; max-height: 40px; object-fit: contain; }
+    .header-container { display: flex; align-items: center; gap: 12px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -84,10 +72,8 @@ if os.path.exists(logo_path):
     b64 = get_image_base64(logo_path)
     logo_img_html = f'<img src="data:image/png;base64,{b64}" class="header-logo-img" />'
 else:
-    # Fallback to text icon if logo not found
     logo_img_html = '<div style="font-size: 1.8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">✍️</div>'
 
-# Header HTML with fixed logo size
 header_html = f"""
 <div style="position: sticky; top: 0; z-index: 999; background: white; padding: 8px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
     <div class="header-container">
@@ -108,7 +94,7 @@ st.markdown("<div style='height: 70px;'></div>", unsafe_allow_html=True)
 tabs = st.tabs(["🏠 Home", "📖 Services", "⚙️ How It Works", "💰 Pricing", "⭐ Testimonials", "👤 About", "❓ FAQ", "📞 Contact", "📝 Order Now"])
 home_tab, services_tab, how_tab, pricing_tab, testimonials_tab, about_tab, faq_tab, contact_tab, order_tab = tabs
 
-# ---------- HOME (unchanged) ----------
+# ---------- HOME ----------
 with home_tab:
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -144,7 +130,7 @@ with home_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I used Isabella\'s resume writing service and landed an interview within a week. Highly recommend!"</p><p class="author">— Michael R., Marketing Executive</p></div>', unsafe_allow_html=True)
 
-# ---------- SERVICES (unchanged) ----------
+# ---------- SERVICES ----------
 with services_tab:
     st.markdown("## Our Premium Services")
     st.image("https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800", caption="Excellence in every word", use_container_width=True)
@@ -156,7 +142,7 @@ with services_tab:
         st.write("- **Custom Websites**: Built with Streamlit, HTML, CSS, or WordPress.\n- **Portfolio Sites**: Showcase your work.\n- **Landing Pages**: Convert visitors to clients.\n- **Maintenance & Support**: Ongoing updates and hosting.")
     st.info("All services are tailored to your needs. Contact us for a free quote!")
 
-# ---------- HOW IT WORKS (unchanged) ----------
+# ---------- HOW IT WORKS ----------
 with how_tab:
     st.markdown("## How It Works")
     st.markdown("Our process is simple and transparent.")
@@ -176,7 +162,7 @@ with how_tab:
         st.markdown("**4. Get your final document** – ready for submission.")
     st.success("We guarantee 100% original, plagiarism‑free content.")
 
-# ---------- PRICING (updated earlier) ----------
+# ---------- PRICING ----------
 with pricing_tab:
     st.markdown("## Our Pricing")
     st.markdown("Transparent, per‑page rates for all your writing needs.")
@@ -256,7 +242,7 @@ with pricing_tab:
     
     st.caption("Prices are per page (approx. 300 words). Custom projects may vary. Contact us for a bespoke quote.")
 
-# ---------- TESTIMONIALS (unchanged) ----------
+# ---------- TESTIMONIALS ----------
 with testimonials_tab:
     st.markdown("## Client Testimonials")
     st.markdown("Real stories from real clients.")
@@ -266,7 +252,7 @@ with testimonials_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"The website they built for my business is gorgeous and converts well."</p><p class="author">— Amanda T., Small Business Owner</p></div><br><div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I needed a last‑minute research paper and they saved me. The paper got an A."</p><p class="author">— David K., Undergraduate Student</p></div>', unsafe_allow_html=True)
 
-# ---------- ABOUT (with Gilbert instead of Maria) ----------
+# ---------- ABOUT ----------
 with about_tab:
     st.markdown("## About Isabella")
     st.markdown("Your trusted partner in academic and professional success.")
@@ -321,7 +307,6 @@ with about_tab:
         </div>
         """, unsafe_allow_html=True)
     with col3:
-        # ---- REPLACED Maria with Gilbert ----
         st.markdown("""
         <div class="team-card">
             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150">
@@ -331,7 +316,7 @@ with about_tab:
         </div>
         """, unsafe_allow_html=True)
 
-# ---------- FAQ (unchanged) ----------
+# ---------- FAQ ----------
 with faq_tab:
     st.markdown("## Frequently Asked Questions")
     with st.expander("What services do you offer?"):
@@ -347,7 +332,7 @@ with faq_tab:
     with st.expander("What payment methods do you accept?"):
         st.write("We accept PayPal. See the Payment section in the Order Now tab.")
 
-# ---------- CONTACT (unchanged) ----------
+# ---------- CONTACT ----------
 with contact_tab:
     st.title("📞 Contact Us")
     st.subheader("We're here to help")
@@ -368,7 +353,7 @@ with contact_tab:
             elif q_submit:
                 st.error("Please fill in all fields.")
 
-# ---------- ORDER NOW (unchanged) ----------
+# ---------- ORDER NOW ----------
 with order_tab:
     st.title("📝 Place Your Order")
     st.subheader("Fill in the details below")
