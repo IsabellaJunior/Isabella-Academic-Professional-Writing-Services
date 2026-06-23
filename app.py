@@ -41,13 +41,13 @@ st.markdown("""
     .chat-admin { background: #dcfce7; text-align: right; }
     .admin-card { background: #f1f5f9; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #3b82f6; }
 
-    /* ---------- FLOATING CHAT BUTTON (Bottom Right) ---------- */
+    /* ---------- FLOATING CHAT BUTTON (WhatsApp Direct) ---------- */
     .floating-chat {
         position: fixed;
         bottom: 30px;
         right: 30px;
         z-index: 9999;
-        background-color: #059669;
+        background-color: #25D366;  /* WhatsApp green */
         color: white;
         border: none;
         border-radius: 50%;
@@ -55,7 +55,7 @@ st.markdown("""
         height: 60px;
         font-size: 28px;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -64,12 +64,12 @@ st.markdown("""
     }
     .floating-chat:hover {
         transform: scale(1.1);
-        box-shadow: 0 8px 30px rgba(5, 150, 105, 0.5);
-        background-color: #047857;
+        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5);
+        background-color: #128C7E;
     }
     .floating-chat .tooltip {
         visibility: hidden;
-        width: 120px;
+        width: 140px;
         background-color: #1e293b;
         color: white;
         text-align: center;
@@ -97,16 +97,14 @@ st.markdown("""
         border-style: solid;
         border-color: transparent transparent transparent #1e293b;
     }
-    /* Pulse animation for attention */
     @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
-        70% { box-shadow: 0 0 0 15px rgba(5, 150, 105, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+        0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
     }
     .floating-chat.pulse {
         animation: pulse 2s infinite;
     }
-    /* Responsive adjustments */
     @media (max-width: 640px) {
         .floating-chat {
             width: 50px;
@@ -122,11 +120,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- FLOATING CHAT BUTTON (injected via HTML) ----------
+# ---------- FLOATING CHAT BUTTON (Direct WhatsApp) ----------
 st.markdown("""
-<a href="#chat" class="floating-chat pulse" title="Chat with us">
+<a href="https://wa.me/17752497692?text=Hi%20Isabella!%20I%20have%20a%20question%20about%20your%20services." target="_blank" class="floating-chat pulse" title="Chat on WhatsApp">
     💬
-    <span class="tooltip">Chat with us 💬</span>
+    <span class="tooltip">Chat on WhatsApp 💬</span>
 </a>
 """, unsafe_allow_html=True)
 
@@ -441,6 +439,22 @@ with chat_tab:
     
     st.info("We'll respond as soon as possible. Feel free to ask about pricing, deadlines, or any special requirements.")
     
+    # Direct WhatsApp button for instant chat
+    st.markdown("""
+    <div style="background-color: #f1f5f9; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 1rem 0;">
+        <p style="font-size: 1.2rem; font-weight: 600; color: #1e293b;">💬 Start Chatting Now</p>
+        <p style="color: #64748b;">Click the button below to chat with us instantly on WhatsApp.</p>
+        <a href="https://wa.me/17752497692?text=Hi%20Isabella!%20I%20have%20a%20question%20about%20your%20services." target="_blank">
+            <button style="background-color:#25D366;color:white;border:none;padding:12px 30px;border-radius:30px;font-size:18px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(37,211,102,0.3);">
+                💬 Chat Now on WhatsApp
+            </button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.markdown("### Or send us a message using the form below")
+    
     with st.form("chat_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -500,7 +514,7 @@ with contact_tab:
             elif q_submit:
                 st.error("Please fill in all fields.")
 
-# ---------- ORDER NOW (Order First, Pay Later) ----------
+# ---------- ORDER NOW ----------
 with order_tab:
     st.title("📝 Place Your Order")
     st.subheader("Fill in the details below")
@@ -530,7 +544,6 @@ with order_tab:
                 st.success("✅ Order submitted successfully!")
                 st.info("We will contact you within 24 hours to discuss your project and provide a quote.")
                 
-                # WhatsApp notification for admin (pre-filled message)
                 whatsapp_msg = f"Hi Isabella! New order from {name}%0A%0A"
                 whatsapp_msg += f"📝 Service: {service_type}%0A"
                 whatsapp_msg += f"⏰ Urgency: {urgency}%0A"
@@ -558,12 +571,11 @@ with order_tab:
     
     st.caption("All information is kept strictly confidential. You will receive a quote before any payment is required.")
 
-# ---------- ADMIN DASHBOARD (Password Protected) ----------
+# ---------- ADMIN DASHBOARD ----------
 with admin_tab:
     st.title("🔐 Admin Dashboard")
     st.subheader("Manage orders and client communications")
     
-    # Simple password protection
     admin_password = "admin123"  # Change this to your own password
     
     if 'admin_logged_in' not in st.session_state:
@@ -588,13 +600,10 @@ with admin_tab:
         
         st.markdown("---")
         
-        # Show orders
         st.markdown("### 📋 Recent Orders")
         orders_df = get_orders()
         if not orders_df.empty:
             st.dataframe(orders_df, use_container_width=True)
-            
-            # Export option
             csv = orders_df.to_csv(index=False)
             st.download_button("📥 Download Orders as CSV", data=csv, file_name="orders.csv", mime="text/csv")
         else:
@@ -602,7 +611,6 @@ with admin_tab:
         
         st.markdown("---")
         
-        # Show messages
         st.markdown("### 💬 Client Messages")
         messages_df = get_messages()
         if not messages_df.empty:
@@ -612,7 +620,6 @@ with admin_tab:
         
         st.markdown("---")
         
-        # Show chats
         st.markdown("### 💬 Chat History")
         chats_df = get_chats()
         if not chats_df.empty:
