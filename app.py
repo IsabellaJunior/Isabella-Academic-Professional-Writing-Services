@@ -4,7 +4,12 @@ import os
 from datetime import datetime
 import base64
 
-st.set_page_config(page_title="Isabella - Premium Writing Services", layout="wide")
+st.set_page_config(
+    page_title="Isabella - Premium Academic & Professional Writing",
+    page_icon="📚",
+    layout="wide",
+    page_description="Expert academic & professional writing services. Order now and pay later. 24/7 support."
+)
 
 st.markdown("""
 <style>
@@ -19,7 +24,6 @@ st.markdown("""
     .testimonial-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; height: 100%; }
     .testimonial-card .stars { color: #f59e0b; }
     .testimonial-card p { font-style: italic; }
-    .payment-details { background-color: #f1f5f9; padding: 1.5rem; border-radius: 12px; border-left: 5px solid #059669; }
     .pricing-card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; height: 100%; transition: 0.2s; }
     .pricing-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
     .pricing-card .price { font-size: 2.5rem; font-weight: 700; color: #1e293b; margin: 0.5rem 0; }
@@ -35,19 +39,18 @@ st.markdown("""
     .process-step .step-number { background-color: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
     .header-logo-img { height: 40px; width: auto; border-radius: 6px; max-height: 40px; object-fit: contain; }
     .header-container { display: flex; align-items: center; gap: 12px; }
-    .chat-container { background: white; padding: 1rem; border-radius: 12px; border: 1px solid #e2e8f0; margin: 0.5rem 0; }
-    .chat-message { padding: 8px 12px; border-radius: 8px; margin: 4px 0; }
-    .chat-client { background: #e0f2fe; text-align: left; }
-    .chat-admin { background: #dcfce7; text-align: right; }
+    .payment-container { background: #f1f5f9; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 1rem 0; }
+    .payment-btn { background-color: #0070ba; color: white; border: none; padding: 14px 40px; border-radius: 30px; font-size: 18px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0,112,186,0.3); text-decoration: none; display: inline-block; }
+    .payment-btn:hover { background-color: #005c9e; box-shadow: 0 6px 20px rgba(0,112,186,0.4); transform: translateY(-2px); }
     .admin-card { background: #f1f5f9; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #3b82f6; }
 
-    /* ---------- FLOATING CHAT BUTTON (WhatsApp Direct) ---------- */
+    /* Floating Chat Button */
     .floating-chat {
         position: fixed;
         bottom: 30px;
         right: 30px;
         z-index: 9999;
-        background-color: #25D366;  /* WhatsApp green */
+        background-color: #25D366;
         color: white;
         border: none;
         border-radius: 50%;
@@ -102,25 +105,15 @@ st.markdown("""
         70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
         100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
     }
-    .floating-chat.pulse {
-        animation: pulse 2s infinite;
-    }
+    .floating-chat.pulse { animation: pulse 2s infinite; }
     @media (max-width: 640px) {
-        .floating-chat {
-            width: 50px;
-            height: 50px;
-            font-size: 22px;
-            bottom: 20px;
-            right: 20px;
-        }
-        .floating-chat .tooltip {
-            display: none;
-        }
+        .floating-chat { width: 50px; height: 50px; font-size: 22px; bottom: 20px; right: 20px; }
+        .floating-chat .tooltip { display: none; }
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- FLOATING CHAT BUTTON (Direct WhatsApp) ----------
+# ---------- FLOATING CHAT BUTTON ----------
 st.markdown("""
 <a href="https://wa.me/17752497692?text=Hi%20Isabella!%20I%20have%20a%20question%20about%20your%20services." target="_blank" class="floating-chat pulse" title="Chat on WhatsApp">
     💬
@@ -358,6 +351,25 @@ with pricing_tab:
         """, unsafe_allow_html=True)
     
     st.caption("Prices are per page (approx. 300 words). Custom projects may vary. Contact us for a bespoke quote.")
+    
+    # Payment section in Pricing tab
+    st.markdown("---")
+    st.markdown("""
+    <div class="payment-container">
+        <p style="font-size: 1.1rem; font-weight: 500; color: #1e293b;">
+            💰 Ready to make a payment?
+        </p>
+        <p style="color: #64748b; margin-bottom: 1rem;">
+            Payment is required after we've discussed your project and agreed on the final price.
+        </p>
+        <a href="https://www.paypal.com/paypalme/muthokanzilu" target="_blank" class="payment-btn">
+            💳 Pay with PayPal
+        </a>
+        <p style="font-size:0.9rem; color:#64748b; margin-top:0.75rem;">
+            You'll be redirected to PayPal's secure site.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ---------- TESTIMONIALS ----------
 with testimonials_tab:
@@ -432,14 +444,13 @@ with about_tab:
         </div>
         """, unsafe_allow_html=True)
 
-# ---------- CHAT (Admin Chat) ----------
+# ---------- CHAT ----------
 with chat_tab:
     st.title("💬 Chat with Admin")
     st.subheader("Have questions before placing your order? Chat with us!")
     
     st.info("We'll respond as soon as possible. Feel free to ask about pricing, deadlines, or any special requirements.")
     
-    # Direct WhatsApp button for instant chat
     st.markdown("""
     <div style="background-color: #f1f5f9; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 1rem 0;">
         <p style="font-size: 1.2rem; font-weight: 600; color: #1e293b;">💬 Start Chatting Now</p>
@@ -491,7 +502,7 @@ with faq_tab:
     with st.expander("Do I need to pay before submitting an order?"):
         st.write("No! You can submit your order first, and we'll discuss the project before any payment is required.")
     with st.expander("What payment methods do you accept?"):
-        st.write("We accept PayPal. Payment details will be shared after we discuss your project.")
+        st.write("We accept PayPal. You can pay using the 'Pay with PayPal' button after we agree on the price.")
 
 # ---------- CONTACT ----------
 with contact_tab:
@@ -570,6 +581,25 @@ with order_tab:
                 st.error("Please fill in all required fields (*).")
     
     st.caption("All information is kept strictly confidential. You will receive a quote before any payment is required.")
+    
+    # ---------- PAYMENT SECTION (Visible & Simple) ----------
+    st.markdown("---")
+    st.markdown("""
+    <div class="payment-container">
+        <p style="font-size: 1.2rem; font-weight: 600; color: #1e293b;">
+            💰 Ready to complete your payment?
+        </p>
+        <p style="color: #64748b; margin-bottom: 1rem;">
+            Payment is required <strong>after</strong> we've discussed your project and agreed on the final price.
+        </p>
+        <a href="https://www.paypal.com/paypalme/muthokanzilu" target="_blank" class="payment-btn">
+            💳 Pay with PayPal
+        </a>
+        <p style="font-size:0.9rem; color:#64748b; margin-top:0.75rem;">
+            You'll be redirected to PayPal's secure site.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ---------- ADMIN DASHBOARD ----------
 with admin_tab:
