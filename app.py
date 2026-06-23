@@ -40,7 +40,94 @@ st.markdown("""
     .chat-client { background: #e0f2fe; text-align: left; }
     .chat-admin { background: #dcfce7; text-align: right; }
     .admin-card { background: #f1f5f9; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #3b82f6; }
+
+    /* ---------- FLOATING CHAT BUTTON (Bottom Right) ---------- */
+    .floating-chat {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        background-color: #059669;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    .floating-chat:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 30px rgba(5, 150, 105, 0.5);
+        background-color: #047857;
+    }
+    .floating-chat .tooltip {
+        visibility: hidden;
+        width: 120px;
+        background-color: #1e293b;
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 6px 10px;
+        position: absolute;
+        right: 70px;
+        font-size: 14px;
+        font-weight: 400;
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+    }
+    .floating-chat:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+    .floating-chat .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        margin-top: -6px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent transparent #1e293b;
+    }
+    /* Pulse animation for attention */
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(5, 150, 105, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+    }
+    .floating-chat.pulse {
+        animation: pulse 2s infinite;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .floating-chat {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+            bottom: 20px;
+            right: 20px;
+        }
+        .floating-chat .tooltip {
+            display: none;
+        }
+    }
 </style>
+""", unsafe_allow_html=True)
+
+# ---------- FLOATING CHAT BUTTON (injected via HTML) ----------
+st.markdown("""
+<a href="#chat" class="floating-chat pulse" title="Chat with us">
+    💬
+    <span class="tooltip">Chat with us 💬</span>
+</a>
 """, unsafe_allow_html=True)
 
 # ---------- HELPER FUNCTIONS ----------
@@ -413,7 +500,7 @@ with contact_tab:
             elif q_submit:
                 st.error("Please fill in all fields.")
 
-# ---------- ORDER NOW (Updated: Order First, Pay Later) ----------
+# ---------- ORDER NOW (Order First, Pay Later) ----------
 with order_tab:
     st.title("📝 Place Your Order")
     st.subheader("Fill in the details below")
