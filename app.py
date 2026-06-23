@@ -35,19 +35,25 @@ st.markdown("""
     .process-step .step-number { background-color: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
     .header-logo-img { height: 40px; width: auto; border-radius: 6px; max-height: 40px; object-fit: contain; }
     .header-container { display: flex; align-items: center; gap: 12px; }
+    .chat-container { background: white; padding: 1rem; border-radius: 12px; border: 1px solid #e2e8f0; margin: 0.5rem 0; }
+    .chat-message { padding: 8px 12px; border-radius: 8px; margin: 4px 0; }
+    .chat-client { background: #e0f2fe; text-align: left; }
+    .chat-admin { background: #dcfce7; text-align: right; }
+    .admin-card { background: #f1f5f9; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #3b82f6; }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------- HELPER FUNCTIONS ----------
-def save_order(name, email, phone, service, urgency, budget, description):
+def save_order(name, email, phone, service, urgency, budget, description, status="Pending"):
     file_path = "orders.csv"
-    new_row = {"Date": datetime.now().strftime("%Y-%m-%d %H:%M"), "Name": name, "Email": email, "Phone": phone, "Service": service, "Urgency": urgency, "Budget": budget, "Description": description}
+    new_row = {"Date": datetime.now().strftime("%Y-%m-%d %H:%M"), "Name": name, "Email": email, "Phone": phone, "Service": service, "Urgency": urgency, "Budget": budget, "Description": description, "Status": status}
     if os.path.exists(file_path):
         df = pd.read_csv(file_path)
         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     else:
         df = pd.DataFrame([new_row])
     df.to_csv(file_path, index=False)
+    return True
 
 def save_message(name, email, message):
     file_path = "messages.csv"
@@ -58,9 +64,36 @@ def save_message(name, email, message):
     else:
         df = pd.DataFrame([new_row])
     df.to_csv(file_path, index=False)
+    return True
 
-# ---------- LOGO (using your exact filename) ----------
-logo_path = "logo.png.png"   # <-- Updated to match your uploaded file
+def save_chat(sender, name, email, message):
+    file_path = "chats.csv"
+    new_row = {"Date": datetime.now().strftime("%Y-%m-%d %H:%M"), "Sender": sender, "Name": name, "Email": email, "Message": message}
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    else:
+        df = pd.DataFrame([new_row])
+    df.to_csv(file_path, index=False)
+    return True
+
+def get_orders():
+    if os.path.exists("orders.csv"):
+        return pd.read_csv("orders.csv")
+    return pd.DataFrame()
+
+def get_messages():
+    if os.path.exists("messages.csv"):
+        return pd.read_csv("messages.csv")
+    return pd.DataFrame()
+
+def get_chats():
+    if os.path.exists("chats.csv"):
+        return pd.read_csv("chats.csv")
+    return pd.DataFrame()
+
+# ---------- LOGO ----------
+logo_path = "logo.png.png"
 
 def get_image_base64(path):
     with open(path, "rb") as f:
@@ -71,7 +104,6 @@ if os.path.exists(logo_path):
     b64 = get_image_base64(logo_path)
     logo_img_html = f'<img src="data:image/png;base64,{b64}" class="header-logo-img" />'
 else:
-    # If not found, show nothing
     logo_img_html = ""
 
 header_html = f"""
@@ -91,10 +123,10 @@ st.markdown(header_html, unsafe_allow_html=True)
 st.markdown("<div style='height: 70px;'></div>", unsafe_allow_html=True)
 
 # ---------- TABS ----------
-tabs = st.tabs(["🏠 Home", "📖 Services", "⚙️ How It Works", "💰 Pricing", "⭐ Testimonials", "👤 About", "❓ FAQ", "📞 Contact", "📝 Order Now"])
-home_tab, services_tab, how_tab, pricing_tab, testimonials_tab, about_tab, faq_tab, contact_tab, order_tab = tabs
+tabs = st.tabs(["🏠 Home", "📖 Services", "⚙️ How It Works", "💰 Pricing", "⭐ Testimonials", "👤 About", "💬 Chat", "❓ FAQ", "📞 Contact", "📝 Order Now", "🔐 Admin"])
+home_tab, services_tab, how_tab, pricing_tab, testimonials_tab, about_tab, chat_tab, faq_tab, contact_tab, order_tab, admin_tab = tabs
 
-# ---------- HOME (unchanged) ----------
+# ---------- HOME ----------
 with home_tab:
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -130,7 +162,7 @@ with home_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I used Isabella\'s resume writing service and landed an interview within a week. Highly recommend!"</p><p class="author">— Michael R., Marketing Executive</p></div>', unsafe_allow_html=True)
 
-# ---------- SERVICES (unchanged) ----------
+# ---------- SERVICES ----------
 with services_tab:
     st.markdown("## Our Premium Services")
     st.image("https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800", caption="Excellence in every word", use_container_width=True)
@@ -142,7 +174,7 @@ with services_tab:
         st.write("- **Custom Websites**: Built with Streamlit, HTML, CSS, or WordPress.\n- **Portfolio Sites**: Showcase your work.\n- **Landing Pages**: Convert visitors to clients.\n- **Maintenance & Support**: Ongoing updates and hosting.")
     st.info("All services are tailored to your needs. Contact us for a free quote!")
 
-# ---------- HOW IT WORKS (unchanged) ----------
+# ---------- HOW IT WORKS ----------
 with how_tab:
     st.markdown("## How It Works")
     st.markdown("Our process is simple and transparent.")
@@ -162,7 +194,7 @@ with how_tab:
         st.markdown("**4. Get your final document** – ready for submission.")
     st.success("We guarantee 100% original, plagiarism‑free content.")
 
-# ---------- PRICING (unchanged) ----------
+# ---------- PRICING ----------
 with pricing_tab:
     st.markdown("## Our Pricing")
     st.markdown("Transparent, per‑page rates for all your writing needs.")
@@ -242,7 +274,7 @@ with pricing_tab:
     
     st.caption("Prices are per page (approx. 300 words). Custom projects may vary. Contact us for a bespoke quote.")
 
-# ---------- TESTIMONIALS (unchanged) ----------
+# ---------- TESTIMONIALS ----------
 with testimonials_tab:
     st.markdown("## Client Testimonials")
     st.markdown("Real stories from real clients.")
@@ -252,20 +284,18 @@ with testimonials_tab:
     with c2:
         st.markdown('<div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"The website they built for my business is gorgeous and converts well."</p><p class="author">— Amanda T., Small Business Owner</p></div><br><div class="testimonial-card"><div class="stars">⭐⭐⭐⭐⭐</div><p>"I needed a last‑minute research paper and they saved me. The paper got an A."</p><p class="author">— David K., Undergraduate Student</p></div>', unsafe_allow_html=True)
 
-# ---------- ABOUT (with your Isabella photo) ----------
+# ---------- ABOUT ----------
 with about_tab:
     st.markdown("## About Isabella")
     st.markdown("Your trusted partner in academic and professional success.")
     
-    # ---- Your Isabella photo (using exact filename) ----
-    isabella_image_path = "isabella.png.PNG"   # <-- Updated to match your uploaded file
+    isabella_image_path = "isabella.png.PNG"
     
     col1, col2 = st.columns([1, 2])
     with col1:
         if os.path.exists(isabella_image_path):
             st.image(isabella_image_path, caption="Our Founder, Isabella", use_container_width=True)
         else:
-            # If image is missing, show nothing – no generic person
             st.markdown("*(Isabella's photo will appear here)*")
     with col2:
         st.markdown("""
@@ -291,7 +321,6 @@ with about_tab:
                 <p style="font-size:0.8rem; color:#94a3b8; text-align:center;">PhD in English Literature</p>
                 """, unsafe_allow_html=True)
         else:
-            # No image – text only
             st.markdown("""
             <div class="team-card">
                 <h4>Isabella</h4>
@@ -318,23 +347,52 @@ with about_tab:
         </div>
         """, unsafe_allow_html=True)
 
-# ---------- FAQ (unchanged) ----------
+# ---------- CHAT (Admin Chat) ----------
+with chat_tab:
+    st.title("💬 Chat with Admin")
+    st.subheader("Have questions before placing your order? Chat with us!")
+    
+    st.info("We'll respond as soon as possible. Feel free to ask about pricing, deadlines, or any special requirements.")
+    
+    with st.form("chat_form", clear_on_submit=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            chat_name = st.text_input("Your Name *", placeholder="e.g., John Doe")
+        with col2:
+            chat_email = st.text_input("Your Email *", placeholder="john@example.com")
+        
+        chat_message = st.text_area("Your Message *", placeholder="Write your question or inquiry here...", height=120)
+        
+        chat_submit = st.form_submit_button("💬 Send Message to Admin")
+        
+        if chat_submit:
+            if chat_name and chat_email and chat_message:
+                save_chat("Client", chat_name, chat_email, chat_message)
+                st.success("✅ Message sent! We'll get back to you soon.")
+                st.info("📱 You can also reach us on WhatsApp for immediate response.")
+                st.markdown(f'<a href="https://wa.me/17752497692?text=Hi%20Isabella%2C%20I%20sent%20a%20message%20on%20your%20website%20about%3A%20{chat_message[:50]}..." target="_blank"><button style="background-color:#25D366;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;">📱 Message on WhatsApp</button></a>', unsafe_allow_html=True)
+            else:
+                st.error("Please fill in all required fields (*).")
+
+# ---------- FAQ ----------
 with faq_tab:
     st.markdown("## Frequently Asked Questions")
     with st.expander("What services do you offer?"):
         st.write("We offer academic writing, professional writing, and website development.")
     with st.expander("How do I place an order?"):
-        st.write("Fill out the Order Form (click 'Order Now' tab).")
+        st.write("Fill out the Order Form (click 'Order Now' tab). You can pay after we discuss your project.")
     with st.expander("Is my information kept confidential?"):
         st.write("Absolutely. We never share your personal data.")
     with st.expander("What if I need revisions?"):
         st.write("We offer free revisions until you are 100% satisfied.")
     with st.expander("How do you ensure quality?"):
         st.write("All work is written by experts, checked for plagiarism, and proofread.")
+    with st.expander("Do I need to pay before submitting an order?"):
+        st.write("No! You can submit your order first, and we'll discuss the project before any payment is required.")
     with st.expander("What payment methods do you accept?"):
-        st.write("We accept PayPal. See the Payment section in the Order Now tab.")
+        st.write("We accept PayPal. Payment details will be shared after we discuss your project.")
 
-# ---------- CONTACT (unchanged) ----------
+# ---------- CONTACT ----------
 with contact_tab:
     st.title("📞 Contact Us")
     st.subheader("We're here to help")
@@ -355,42 +413,128 @@ with contact_tab:
             elif q_submit:
                 st.error("Please fill in all fields.")
 
-# ---------- ORDER NOW (unchanged) ----------
+# ---------- ORDER NOW (Updated: Order First, Pay Later) ----------
 with order_tab:
     st.title("📝 Place Your Order")
     st.subheader("Fill in the details below")
+    
+    st.info("💡 **You don't need to pay upfront!** Submit your order, and we'll discuss your project and pricing before any payment is required.")
+    
     with st.form("order_form", clear_on_submit=True):
         c1, c2 = st.columns(2)
         with c1:
             name = st.text_input("Full Name *", placeholder="e.g., John Doe")
             email = st.text_input("Email Address *", placeholder="john@example.com")
-            phone = st.text_input("Phone Number", placeholder="+1 775 249 7692")
+            phone = st.text_input("Phone Number *", placeholder="+1 775 249 7692")
         with c2:
             service_type = st.selectbox("Service Type *", ["Select an option...", "Academic Writing", "Research Paper", "Dissertation/Thesis", "Resume/CV", "Cover Letter", "Business Proposal", "Website Development", "Editing/Proofreading", "Other"])
             urgency = st.selectbox("Urgency", ["Flexible", "Within 7 days", "Within 3 days", "Within 24 hours"])
-            budget = st.number_input("Budget (USD)", min_value=0, step=10, value=50)
-        description = st.text_area("Project Description *", placeholder="Describe your requirements...", height=150)
+            budget = st.number_input("Estimated Budget (USD)", min_value=0, step=10, value=50, help="This is an estimate – we'll discuss final pricing later.")
+        
+        description = st.text_area("Project Description *", placeholder="Describe your requirements in detail...", height=150)
+        
         file = st.file_uploader("Attach any relevant files (optional)", type=["pdf", "docx", "txt", "jpg", "png"])
+        
         submitted = st.form_submit_button("📩 Submit Order Request")
+        
         if submitted:
-            if name and email and service_type != "Select an option..." and description:
+            if name and email and phone and service_type != "Select an option..." and description:
                 save_order(name, email, phone, service_type, urgency, budget, description)
                 st.success("✅ Order submitted successfully!")
-                st.info("We will contact you within 24 hours.")
+                st.info("We will contact you within 24 hours to discuss your project and provide a quote.")
+                
+                # WhatsApp notification for admin (pre-filled message)
+                whatsapp_msg = f"Hi Isabella! New order from {name}%0A%0A"
+                whatsapp_msg += f"📝 Service: {service_type}%0A"
+                whatsapp_msg += f"⏰ Urgency: {urgency}%0A"
+                whatsapp_msg += f"💰 Budget: ${budget}%0A"
+                whatsapp_msg += f"📧 Email: {email}%0A"
+                whatsapp_msg += f"📱 Phone: {phone}%0A%0A"
+                whatsapp_msg += f"📄 Description: {description[:100]}..."
+                
+                st.markdown(f"""
+                <div style="background-color: #f1f5f9; padding: 1rem; border-radius: 12px; margin: 1rem 0;">
+                    <p style="font-weight: 600; color: #1e293b;">📱 Notify Admin on WhatsApp:</p>
+                    <p style="font-size: 0.9rem; color: #64748b;">Click the button below to send order details to the admin on WhatsApp.</p>
+                    <a href="https://wa.me/17752497692?text={whatsapp_msg}" target="_blank">
+                        <button style="background-color:#25D366;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;cursor:pointer;">
+                            📱 Send Order Notification
+                        </button>
+                    </a>
+                </div>
+                """, unsafe_allow_html=True)
+                
                 if file is not None:
                     st.write(f"📎 File attached: {file.name}")
             else:
                 st.error("Please fill in all required fields (*).")
-    st.caption("All information is kept strictly confidential.")
-    st.markdown("---")
-    st.subheader("💳 Make a Payment")
-    st.markdown("After we discuss your project, you can pay securely via PayPal.")
-    if 'show_payment' not in st.session_state:
-        st.session_state.show_payment = False
-    if st.button("🔒 Pay Now", key="pay_now_btn_order"):
-        st.session_state.show_payment = not st.session_state.show_payment
-    if st.session_state.show_payment:
-        st.markdown('<div class="payment-details"><h3>Payment Information</h3><p><strong>PayPal Email:</strong> <code>muthokanzilu@gmail.com</code></p><p>Send your payment directly via PayPal.</p><p><a href="https://www.paypal.com/paypalme/muthokanzilu" target="_blank" style="background-color:#0070ba;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">💰 Go to PayPal.me</a></p><p style="font-size:0.9rem;color:#64748b;">You will be redirected to PayPal\'s secure site.</p></div>', unsafe_allow_html=True)
+    
+    st.caption("All information is kept strictly confidential. You will receive a quote before any payment is required.")
+
+# ---------- ADMIN DASHBOARD (Password Protected) ----------
+with admin_tab:
+    st.title("🔐 Admin Dashboard")
+    st.subheader("Manage orders and client communications")
+    
+    # Simple password protection
+    admin_password = "admin123"  # Change this to your own password
+    
+    if 'admin_logged_in' not in st.session_state:
+        st.session_state.admin_logged_in = False
+    
+    if not st.session_state.admin_logged_in:
+        with st.form("admin_login"):
+            password = st.text_input("Enter Admin Password", type="password")
+            login_submit = st.form_submit_button("Login")
+            if login_submit:
+                if password == admin_password:
+                    st.session_state.admin_logged_in = True
+                    st.success("✅ Logged in successfully!")
+                    st.rerun()
+                else:
+                    st.error("❌ Incorrect password")
+    else:
+        st.success("✅ Logged in as Admin")
+        if st.button("Logout"):
+            st.session_state.admin_logged_in = False
+            st.rerun()
+        
+        st.markdown("---")
+        
+        # Show orders
+        st.markdown("### 📋 Recent Orders")
+        orders_df = get_orders()
+        if not orders_df.empty:
+            st.dataframe(orders_df, use_container_width=True)
+            
+            # Export option
+            csv = orders_df.to_csv(index=False)
+            st.download_button("📥 Download Orders as CSV", data=csv, file_name="orders.csv", mime="text/csv")
+        else:
+            st.info("No orders yet.")
+        
+        st.markdown("---")
+        
+        # Show messages
+        st.markdown("### 💬 Client Messages")
+        messages_df = get_messages()
+        if not messages_df.empty:
+            st.dataframe(messages_df, use_container_width=True)
+        else:
+            st.info("No messages yet.")
+        
+        st.markdown("---")
+        
+        # Show chats
+        st.markdown("### 💬 Chat History")
+        chats_df = get_chats()
+        if not chats_df.empty:
+            st.dataframe(chats_df, use_container_width=True)
+        else:
+            st.info("No chat messages yet.")
+        
+        st.markdown("---")
+        st.info(f"📱 WhatsApp: +1 (775) 249-7692")
 
 st.markdown("---")
 st.caption("© 2026 Isabella Academic & Professional Writing Services")
