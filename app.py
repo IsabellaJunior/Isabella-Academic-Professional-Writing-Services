@@ -7,9 +7,15 @@ import base64
 st.set_page_config(
     page_title="Isabella - Premium Academic & Professional Writing",
     page_icon="📚",
-    layout="wide",
-    page_description="Expert academic & professional writing services. Order now and pay later. 24/7 support."
+    layout="wide"
 )
+
+# Meta description for SEO
+st.markdown("""
+<head>
+    <meta name="description" content="Expert academic & professional writing services. Order now and pay later. 24/7 support. Essays, resumes, dissertations, and more.">
+</head>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
